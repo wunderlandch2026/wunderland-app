@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WUNDERLAND • Die App • V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;family=Nunito:wght@400;600&amp;display=swap');
+        
+        :root {
+            --primary-orange: #FF6B00;
+            --primary-teal: #00B4D8;
+            --accent-yellow: #FFD60A;
+            --dark: #1A1A2E;
+            --gold: #F59E0B;
+            --silver: #94A3B8;
+            --platinum: #64748B;
+        }
+        
+        body {
+            font-family: 'Nunito', system-ui, -apple-system, sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .playful-shadow {
+            box-shadow: 0 10px 25px -5px rgb(255 107 0 / 0.2), 0 10px 10px -5px rgb(0 180 216 / 0.1);
+        }
+
+        .attraction-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .attraction-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .nav-active {
+            color: #FF6B00;
+            font-weight: 700;
+        }
+
+        .wunder-gradient {
+            background: linear-gradient(135deg, #FF6B00 0%, #00B4D8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .kid-button {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kid-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: all 0.4s;
+            transform: scale(0.5);
+        }
+        
+        .kid-button:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .app-container {
+            max-width: 420px;
+            margin: 0 auto;
+            box-shadow: 0 0 0 12px #1A1A2E, 0 0 0 16px #FF6B00;
+            border-radius: 48px;
+            overflow: hidden;
+            background: white;
+            position: relative;
+        }
+
+        .status-bar {
+            background: #1A1A2E;
+            color: white;
+            font-size: 11px;
+            padding: 4px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .swiss-clean {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .magic-sparkle {
+            animation: sparkle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .floor-plan {
+            background: linear-gradient(#E8F4F8, #F0F9FF);
+            position: relative;
+        }
+
+        .attraction-hotspot {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .attraction-hotspot:hover {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 8px #FF6B00);
+        }
+
+        .live-dot {
+            animation: pulse 2s infinite;
+        }
+
+        .tier-gold { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .tier-silver { background: linear-gradient(135deg, #94A3B8, #64748B); }
+        .tier-platinum { background: linear-gradient(135deg, #64748B, #475569); }
+
+        .swiss-badge {
+            background: linear-gradient(90deg, #FF0000, #FFFFFF, #FF0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 flex items-center justify-center min-h-screen p-4">
+    <!-- Phone Frame -->
+    <div class="app-container w-full max-w-[420px] bg-white overflow-hidden shadow-2xl border-[14px] border-zinc-900 rounded-[60px]">
+        
+        <!-- Status Bar -->
+        <div class="status-bar px-6 pt-3 pb-1 text-white text-[10px] font-medium">
+            <div class="flex items-center gap-1.5">
+                <span>9:41</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <i class="fas fa-signal text-[10px]"></i>
+                <i class="fas fa-wifi text-[10px]"></i>
+                <span class="flex items-center gap-0.5">92% <i class="fas fa-battery-full text-[10px]"></i></span>
+            </div>
+        </div>
+
+        <!-- Top App Bar -->
+        <div class="bg-white px-5 py-3.5 flex items-center justify-between border-b border-zinc-100">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
+                        <span class="text-white text-2xl font-black logo-font tracking-tighter">W</span>
+                    </div>
+                    <div>
+                        <div class="font-black text-2xl tracking-tighter text-zinc-900 logo-font">WUNDERLAND</div>
+                        <div class="text-[9px] text-zinc-500 -mt-1 font-semibold tracking-[1px]">WINTERTHUR • SCHWEIZ</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div class="flex bg-zinc-100 rounded-full p-0.5 text-xs">
+                    <div onclick="switchLanguage('de')" class="px-2.5 py-0.5 rounded-full bg-white shadow text-zinc-900 font-semibold cursor-pointer text-[10px]">DE</div>
+                    <div onclick="switchLanguage('en')" class="px-2.5 py-0.5 text-zinc-500 font-semibold cursor-pointer text-[10px]">EN</div>
+                    <div onclick="switchLanguage('fr')" class="px-2.5 py-0.5 text-zinc-500 font-semibold cursor-pointer text-[10px]">FR</div>
+                </div>
+                
+                <div class="relative cursor-pointer" onclick="showNotifications()">
+                    <i class="fas fa-bell text-xl text-zinc-700"></i>
+                    <div class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                        <span class="text-white text-[8px] font-bold">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="h-[580px] overflow-y-auto bg-zinc-50 pb-20 relative">
+            
+            <!-- HOME TAB -->
+            <div id="tab-home" class="tab-content">
+                <!-- Hero Banner -->
+                <div class="relative h-56 bg-cover bg-center" style="background-image: linear-gradient(rgba(26,26,46,0.35), rgba(26,26,46,0.45)), url('https://picsum.photos/id/1015/800/600')">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30"></div>
+                    
+                    <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
+                        <div class="flex items-center gap-2 mb-1 flex-wrap">
+                            <div class="px-3 py-0.5 bg-white/90 backdrop-blur text-orange-600 text-xs font-bold rounded-full flex items-center gap-1 w-fit">
+                                <i class="fas fa-sun text-orange-500"></i>
+                                <span>HEUTE PERFEKT</span>
+                            </div>
+                            <div class="px-2.5 py-0.5 bg-emerald-500 text-white text-xs font-bold rounded-full flex items-center gap-1 w-fit">
+                                <div class="w-1.5 h-1.5 bg-white rounded-full live-dot"></div>
+                                <span>LIVE: 34% AUSGELASTET</span>
+                            </div>
+                            <div class="px-2.5 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center gap-1 w-fit">
+                                <i class="fas fa-train"></i>
+                                <span>SBB 12% RABATT</span>
+                            </div>
+                        </div>
+                        
+                        <h1 class="text-4xl font-black tracking-tighter leading-none mb-1">SPASS, SPANNUNG<br>&amp; ACTION!</h1>
+                        <p class="text-white/90 text-sm font-medium">Das grösste Spielparadies der Schweiz – für die ganze Familie</p>
+                    </div>
+                </div>
+
+                <!-- Smart Swiss Banner -->
+                <div class="px-5 -mt-4 relative z-10">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-3xl p-4 shadow-xl flex items-center gap-3">
+                        <div class="text-3xl">🚂</div>
+                        <div class="flex-1">
+                            <div class="font-bold text-sm">SBB + WUNDERLAND KOMBI</div>
+                            <div class="text-xs opacity-90">Ab Zürich HB: 32.50 CHF statt 35.50 CHF • Heute noch 47 Tickets verfügbar</div>
+                        </div>
+                        <button onclick="showSBBModal()" class="px-4 py-1.5 bg-white text-blue-600 text-xs font-bold rounded-2xl">JETZT BUCHEN</button>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="px-5 mt-4">
+                    <div class="bg-white rounded-3xl shadow-xl p-4 flex justify-between items-center swiss-clean">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <div class="text-xs text-zinc-500">Heute besucht</div>
+                                <div class="font-black text-3xl text-zinc-900">214</div>
+                            </div>
+                            <div class="h-9 w-px bg-zinc-200"></div>
+                            <div>
+                                <div class="text-xs text-emerald-600 font-bold">BESTE ZEIT JETZT!</div>
+                                <div class="text-xs text-zinc-500">Wartezeit &lt; 5 Min</div>
+                            </div>
+                        </div>
+                        <button onclick="bookNowQuick()" 
+                                class="kid-button px-6 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-2xl text-sm flex items-center gap-2 shadow-lg active:scale-[0.985]">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>TICKETS</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loyalty Status -->
+                <div class="px-5 mt-4">
+                    <div class="bg-white rounded-3xl p-4 shadow border border-amber-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 tier-silver rounded-full flex items-center justify-center">
+                                    <i class="fas fa-medal text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm">SILBER STATUS</div>
+                                    <div class="text-xs text-zinc-500">2,840 / 5,000 Punkte bis Gold</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-amber-600 font-bold">SILVER</div>
+                                <div class="font-black text-lg text-amber-600">2,840</div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-zinc-100 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-amber-400 to-yellow-500 h-2 rounded-full" style="width: 56.8%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Highlights -->
+                <div class="px-5 mt-4">
+                    <div class="flex items-center justify-between mb-3 px-1">
+                        <div class="font-bold text-lg text-zinc-900">Heutige Highlights</div>
+                        <div onclick="showAllAttractions()" class="text-xs text-orange-600 font-semibold flex items-center gap-1 cursor-pointer">ALLE ANSEHEN <i class="fas fa-arrow-right text-[10px]"></i></div>
+                    </div>
+                    
+                    <div class="flex gap-3 overflow-x-auto pb-3 snap-x scrollbar-hide">
+                        <div onclick="showAttractionDetail(0)" class="min-w-[148px] bg-white rounded-2xl overflow-hidden shadow cursor-pointer snap-start">
+                            <div class="h-24 bg-cover bg-center relative" style="background-image: url('https://picsum.photos/id/1036/300/200')">
+                                <div class="absolute top-2 right-2 bg-black/60 text-white text-[9px] px-1.5 py-px rounded">2-10 J.</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="font-bold text-sm">Riesen-Vulkan</div>
+                                <div class="text-emerald-600 text-xs flex items-center gap-1"><i class="fas fa-clock text-[10px]"></i> <span>Jetzt 4 Min Wartezeit</span></div>
+                            </div>
+                        </div>
+                        
+                        <div onclick="showAttractionDetail(1)" class="min-w-[148px] bg-white rounded-2xl overflow-hidden shadow cursor-pointer snap-start">
+                            <div class="h-24 bg-cover bg-center relative" style="background-image: url('https://picsum.photos/id/106/300/200')">
+                                <div class="absolute top-2 right-2 bg-black/60 text-white text-[9px] px-1.5 py-px rounded">3-12 J.</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="font-bold text-sm">Trampolin-Himmel</div>
+                                <div class="text-emerald-600 text-xs flex items-center gap-1"><i class="fas fa-clock text-[10px]"></i> <span>Jetzt 2 Min Wartezeit</span></div>
+                            </div>
+                        </div>
+                        
+                        <div onclick="showAttractionDetail(2)" class="min-w-[148px] bg-white rounded-2xl overflow-hidden shadow cursor-pointer snap-start">
+                            <div class="h-24 bg-cover bg-center relative" style="background-image: url('https://picsum.photos/id/1074/300/200')">
+                                <div class="absolute top-2 right-2 bg-black/60 text-white text-[9px] px-1.5 py-px rounded">2-8 J.</div>
+                            </div>
+                            <div class="p-3">
+                                <div class="font-bold text-sm">Ballmeer Abenteuer</div>
+                                <div class="text-emerald-600 text-xs flex items-center gap-1"><i class="fas fa-clock text-[10px]"></i> <span>Keine Wartezeit</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid -->
+                <div class="px-5 mt-2 grid grid-cols-2 gap-3">
+                    <button onclick="showBirthdayModal()" class="kid-button bg-white border border-zinc-200 hover:border-pink-200 rounded-2xl p-4 text-left flex flex-col items-start shadow-sm active:scale-[0.985]">
+                        <div class="w-8 h-8 bg-pink-100 rounded-xl flex items-center justify-center mb-2.5">
+                            <i class="fas fa-birthday-cake text-pink-600 text-xl"></i>
+                        </div>
+                        <div class="font-bold text-sm">Kindergeburtstag</div>
+                        <div class="text-xs text-zinc-500">Ab 289 CHF • 12+ Kinder</div>
+                    </button>
+                    
+                    <button onclick="showPassesModal()" class="kid-button bg-white border border-amber-200 hover:border-amber-300 rounded-2xl p-4 text-left flex flex-col items-start shadow-sm active:scale-[0.985]">
+                        <div class="w-8 h-8 bg-amber-100 rounded-xl flex items-center justify-center mb-2.5">
+                            <i class="fas fa-id-card text-amber-600 text-xl"></i>
+                        </div>
+                        <div class="font-bold text-sm">Jahreskarte / Season Pass</div>
+                        <div class="text-xs text-amber-600 font-semibold">Ab 299 CHF/Jahr • 30% sparen</div>
+                    </button>
+                    
+                    <button onclick="showSchoolModal()" class="kid-button bg-white border border-blue-200 hover:border-blue-300 rounded-2xl p-4 text-left flex flex-col items-start shadow-sm active:scale-[0.985]">
+                        <div class="w-8 h-8 bg-blue-100 rounded-xl flex items-center justify-center mb-2.5">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="font-bold text-sm">Schulklassen &amp; Gruppen</div>
+                        <div class="text-xs text-blue-600">Spezialpreise ab 12 Kinder</div>
+                    </button>
+                    
+                    <button onclick="showLoyaltyModal()" class="kid-button bg-white border border-emerald-200 hover:border-emerald-300 rounded-2xl p-4 text-left flex flex-col items-start shadow-sm active:scale-[0.985]">
+                        <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center mb-2.5">
+                            <i class="fas fa-trophy text-emerald-600 text-xl"></i>
+                        </div>
+                        <div class="font-bold text-sm">Deine Vorteile</div>
+                        <div class="text-xs text-emerald-600">SILVER • 12 Benefits aktiv</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- BOOK TAB -->
+            <div id="tab-book" class="tab-content hidden px-5 pt-5">
+                <div class="mb-6">
+                    <div class="font-black text-3xl tracking-tight">Tickets &amp; Buchungen</div>
+                    <p class="text-zinc-500 text-sm">Wähle dein perfektes Erlebnis</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Single Visit -->
+                    <div class="bg-white rounded-3xl p-5 shadow border border-zinc-100">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-xl">Einzelbesuch</div>
+                                <div class="text-xs text-zinc-500">Gültig für 1 Tag • Inkl. 1 Token</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-emerald-600 font-bold">BESTSELLER</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 space-y-3 text-sm">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-child text-orange-500"></i>
+                                    <span>Kinder (2–12 Jahre)</span>
+                                </div>
+                                <div class="font-black text-xl">17 CHF</div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-user text-zinc-400"></i>
+                                    <span>Erwachsene (13+)</span>
+                                </div>
+                                <div class="font-black text-xl">7 CHF</div>
+                            </div>
+                            <div class="flex justify-between items-center text-emerald-600">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-baby"></i>
+                                    <span>Kleinkinder (&lt;2 Jahre)</span>
+                                </div>
+                                <div class="font-black text-xl">KOSTENLOS</div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="startTicketBooking('single')" 
+                                class="mt-5 w-full py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl flex items-center justify-center gap-2 active:scale-[0.985]">
+                            <i class="fas fa-plus"></i> 
+                            <span>TICKETS KAUFEN</span>
+                        </button>
+                    </div>
+
+                    <!-- Season Pass -->
+                    <div onclick="showPassesModal()" class="cursor-pointer bg-gradient-to-br from-amber-500 to-yellow-500 text-white rounded-3xl p-5 flex items-center justify-between shadow-xl active:scale-[0.985]">
+                        <div>
+                            <div class="font-black text-xl">Jahreskarte 2026</div>
+                            <div class="text-amber-100 text-sm">Unbegrenzter Zutritt • 30% sparen • Exklusive Events</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs opacity-75">AB</div>
+                            <div class="font-black text-3xl">299 CHF</div>
+                        </div>
+                    </div>
+
+                    <!-- School & Groups -->
+                    <div onclick="showSchoolModal()" class="cursor-pointer bg-white border border-blue-200 rounded-3xl p-5 flex items-center justify-between shadow active:scale-[0.985]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600 text-2xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">Schulklassen &amp; Gruppen</div>
+                                <div class="text-xs text-blue-600">Ab 12 Kinder • Spezialpreise + Workshop</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-arrow-right text-blue-600"></i>
+                    </div>
+
+                    <!-- SBB Combo -->
+                    <div onclick="showSBBModal()" class="cursor-pointer bg-white border border-indigo-200 rounded-3xl p-5 flex items-center justify-between shadow active:scale-[0.985]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center">
+                                <i class="fas fa-train text-indigo-600 text-2xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold">SBB + Wunderland Kombiticket</div>
+                                <div class="text-xs text-indigo-600">Zug + Eintritt • Bis zu 18% sparen</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-arrow-right text-indigo-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXPLORE TAB -->
+            <div id="tab-explore" class="tab-content hidden px-5 pt-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl tracking-tight">Entdecke Wunderland</div>
+                        <div class="text-sm text-zinc-500">12 Attraktionen • 2 Etagen • Barrierefrei</div>
+                    </div>
+                    <div class="flex bg-white rounded-full p-1 shadow text-xs">
+                        <div onclick="filterAttractions('all')" class="px-3 py-1 rounded-full font-semibold cursor-pointer bg-orange-500 text-white" id="filter-all">Alle</div>
+                        <div onclick="filterAttractions('active')" class="px-3 py-1 rounded-full font-semibold cursor-pointer text-zinc-600" id="filter-active">Aktiv</div>
+                        <div onclick="filterAttractions('calm')" class="px-3 py-1 rounded-full font-semibold cursor-pointer text-zinc-600" id="filter-calm">Ruhig</div>
+                    </div>
+                </div>
+
+                <!-- Interactive Floor Plan -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2 px-1">
+                        <div class="font-semibold flex items-center gap-2"><i class="fas fa-map text-orange-500"></i> <span>Interaktiver Lageplan</span></div>
+                        <div class="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full font-bold">EG + 1. OG • ROLLSTUHLGERECHT</div>
+                    </div>
+                    
+                    <div class="floor-plan rounded-3xl overflow-hidden border border-zinc-200 shadow-inner relative h-72" id="floor-plan">
+                        <svg width="100%" height="100%" viewBox="0 0 400 280" class="absolute inset-0">
+                            <rect x="20" y="20" width="360" height="240" rx="20" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+                            <text x="50" y="45" font-size="11" fill="#64748b" font-weight="700">ERDGESCHOSS</text>
+                            
+                            <g onclick="showAttractionDetail(0)"><circle cx="120" cy="90" r="22" fill="#FF6B00" opacity="0.15"/><circle cx="120" cy="90" r="14" fill="#FF6B00"/><text x="120" y="94" text-anchor="middle" fill="white" font-size="10" font-weight="bold">V</text></g>
+                            <g onclick="showAttractionDetail(1)"><circle cx="220" cy="85" r="18" fill="#00B4D8" opacity="0.15"/><circle cx="220" cy="85" r="12" fill="#00B4D8"/><text x="220" y="89" text-anchor="middle" fill="white" font-size="9" font-weight="bold">T</text></g>
+                            <g onclick="showAttractionDetail(2)"><circle cx="310" cy="110" r="20" fill="#22C55E" opacity="0.15"/><circle cx="310" cy="110" r="13" fill="#22C55E"/><text x="310" y="114" text-anchor="middle" fill="white" font-size="9" font-weight="bold">B</text></g>
+                            <g onclick="showAttractionDetail(3)"><rect x="70" y="150" width="50" height="35" rx="8" fill="#A855F7" opacity="0.15"/><rect x="75" y="155" width="40" height="25" rx="5" fill="#A855F7"/><text x="95" y="172" text-anchor="middle" fill="white" font-size="8" font-weight="bold">RUTSCH</text></g>
+                            <g onclick="showAttractionDetail(4)"><circle cx="200" cy="180" r="18" fill="#EC4899" opacity="0.15"/><circle cx="200" cy="180" r="11" fill="#EC4899"/><text x="200" y="184" text-anchor="middle" fill="white" font-size="8" font-weight="bold">HÜPF</text></g>
+                            
+                            <text x="50" y="235" font-size="11" fill="#64748b" font-weight="700">1. OBERGESCHOSS • SENSORY ROOM</text>
+                            
+                            <g onclick="showAttractionDetail(5)"><rect x="260" y="200" width="45" height="30" rx="6" fill="#F59E0B" opacity="0.2"/><rect x="265" y="205" width="35" height="20" rx="4" fill="#F59E0B"/><text x="282" y="220" text-anchor="middle" fill="white" font-size="7" font-weight="bold">KLETTER</text></g>
+                            <g onclick="showAttractionDetail(6)"><circle cx="340" cy="215" r="14" fill="#06B6D4" opacity="0.15"/><circle cx="340" cy="215" r="9" fill="#06B6D4"/><text x="340" y="218" text-anchor="middle" fill="white" font-size="7" font-weight="bold">CAR</text></g>
+                        </svg>
+                        
+                        <div class="absolute bottom-3 right-3 bg-white/90 text-[9px] px-2 py-px rounded font-semibold flex items-center gap-1 shadow">
+                            <i class="fas fa-info-circle text-orange-500"></i> 
+                            <span>Tippe auf Symbole</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="attractions-list" class="space-y-3"></div>
+            </div>
+
+            <!-- GALLERY TAB -->
+            <div id="tab-gallery" class="tab-content hidden px-5 pt-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="font-black text-3xl tracking-tight">Galerie &amp; Momente</div>
+                    <button onclick="uploadMoment()" class="flex items-center gap-2 text-sm font-bold text-orange-600 bg-orange-50 px-4 py-2 rounded-2xl active:bg-orange-100">
+                        <i class="fas fa-camera"></i> <span>Teilen</span>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="aspect-square bg-cover bg-center rounded-2xl overflow-hidden relative shadow" style="background-image: url('https://picsum.photos/id/1016/400/400')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                            <div class="text-white text-xs font-bold">Familie Weber • 14. Jan</div>
+                        </div>
+                    </div>
+                    <div class="aspect-square bg-cover bg-center rounded-2xl overflow-hidden relative shadow" style="background-image: url('https://picsum.photos/id/1027/400/400')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                            <div class="text-white text-xs font-bold">Geburtstag Mia • 22. Jan</div>
+                        </div>
+                    </div>
+                    <div class="aspect-square bg-cover bg-center rounded-2xl overflow-hidden relative shadow" style="background-image: url('https://picsum.photos/id/1033/400/400')">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="bg-black/50 text-white px-3 py-1 rounded text-xs font-bold flex items-center gap-1">
+                                <i class="fas fa-play"></i> <span>VIDEO</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aspect-square bg-cover bg-center rounded-2xl overflow-hidden relative shadow" style="background-image: url('https://picsum.photos/id/1060/400/400')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                            <div class="text-white text-xs font-bold">Der Vulkan rockt! 🔥</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-center">
+                    <div class="inline-flex items-center text-xs bg-white px-4 py-2 rounded-full shadow text-zinc-500">
+                        <i class="fas fa-users mr-2"></i> 
+                        <span>2,847 Momente geteilt diese Woche</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE TAB -->
+            <div id="tab-profile" class="tab-content hidden px-5 pt-5">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-teal-400 rounded-full flex items-center justify-center text-white text-4xl font-black shadow-inner">M</div>
+                    <div>
+                        <div class="font-black text-2xl">Familie Müller</div>
+                        <div class="text-sm text-emerald-600 flex items-center gap-1"><i class="fas fa-check-circle"></i> <span>Premium Mitglied seit 2023</span></div>
+                        <div class="text-xs text-zinc-500">4 Kinder • 28 Besuche • SILVER TIER</div>
+                    </div>
+                </div>
+
+                <!-- Loyalty Progress -->
+                <div class="bg-white rounded-3xl p-5 shadow mb-4">
+                    <div class="flex justify-between items-end mb-2">
+                        <div>
+                            <div class="text-xs text-zinc-500">WUNDERPOINTS</div>
+                            <div class="font-black text-4xl text-amber-600">2,840</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-emerald-600 font-bold">SILVER</div>
+                            <div class="text-xs">1,160 bis GOLD</div>
+                        </div>
+                    </div>
+                    <div class="w-full bg-zinc-100 rounded-full h-3 mb-3">
+                        <div class="bg-gradient-to-r from-amber-400 to-yellow-500 h-3 rounded-full" style="width: 56.8%"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                        <div class="bg-zinc-50 rounded-xl p-2"><div class="font-bold text-amber-600">BRONZE</div><div class="text-[10px]">0–999</div></div>
+                        <div class="bg-amber-100 rounded-xl p-2 border border-amber-300"><div class="font-bold text-amber-700">SILVER</div><div class="text-[10px]">1,000–4,999</div></div>
+                        <div class="bg-yellow-100 rounded-xl p-2"><div class="font-bold text-yellow-700">GOLD</div><div class="text-[10px]">5,000–9,999</div></div>
+                        <div class="bg-slate-100 rounded-xl p-2"><div class="font-bold text-slate-700">PLATINUM</div><div class="text-[10px]">10,000+</div></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-5 shadow mb-4">
+                    <div class="font-semibold mb-3 flex items-center gap-2"><i class="fas fa-users text-orange-500"></i> <span>Meine Familie</span></div>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between"><span>Emma (5 J.)</span> <span class="text-xs bg-pink-100 text-pink-600 px-2 py-px rounded">Ballmeer-Liebhaberin</span></div>
+                        <div class="flex justify-between"><span>Lukas (8 J.)</span> <span class="text-xs bg-blue-100 text-blue-600 px-2 py-px rounded">Vulkan-Champion</span></div>
+                        <div class="flex justify-between"><span>Sofia (3 J.)</span> <span class="text-xs bg-emerald-100 text-emerald-600 px-2 py-px rounded">Weichboden-Expertin</span></div>
+                    </div>
+                </div>
+
+                <button onclick="showSettings()" class="w-full py-3.5 border border-zinc-300 text-sm font-semibold rounded-2xl flex items-center justify-center gap-2 hover:bg-zinc-50">
+                    <i class="fas fa-cog"></i> <span>EINSTELLUNGEN &amp; DATEN</span>
+                </button>
+            </div>
+
+            <!-- MORE / SWISS EXTRAS TAB -->
+            <div id="tab-more" class="tab-content hidden px-5 pt-5">
+                <div class="font-black text-3xl tracking-tight mb-4">Swiss Extras</div>
+                
+                <div class="space-y-3">
+                    <div onclick="showCorporateModal()" class="bg-white rounded-2xl p-4 flex items-center gap-4 cursor-pointer active:bg-zinc-50">
+                        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center"><i class="fas fa-building text-purple-600"></i></div>
+                        <div class="flex-1"><div class="font-bold">Corporate &amp; Team Events</div><div class="text-xs text-zinc-500">Firmenanlässe • Teambuilding • 15–200 Personen</div></div>
+                    </div>
+                    
+                    <div onclick="showSustainabilityModal()" class="bg-white rounded-2xl p-4 flex items-center gap-4 cursor-pointer active:bg-zinc-50">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center"><i class="fas fa-leaf text-emerald-600"></i></div>
+                        <div class="flex-1"><div class="font-bold">CO₂-kompensierte Besuche</div><div class="text-xs text-emerald-600">Jeder Besuch pflanzt 3 Bäume in der Schweiz</div></div>
+                    </div>
+                    
+                    <div onclick="showAccessibilityModal()" class="bg-white rounded-2xl p-4 flex items-center gap-4 cursor-pointer active:bg-zinc-50">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center"><i class="fas fa-universal-access text-indigo-600"></i></div>
+                        <div class="flex-1"><div class="font-bold">Barrierefrei &amp; Inklusiv</div><div class="text-xs text-zinc-500">Sensory Room • Rollstuhl • Ruhezeiten • Gebärdensprache</div></div>
+                    </div>
+                    
+                    <div onclick="showMerchModal()" class="bg-white rounded-2xl p-4 flex items-center gap-4 cursor-pointer active:bg-zinc-50">
+                        <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center"><i class="fas fa-tshirt text-orange-600"></i></div>
+                        <div class="flex-1"><div class="font-bold">Wunderland Merch Shop</div><div class="text-xs text-zinc-500">T-Shirts, Kuscheltiere, Trinkflaschen • Versand in CH</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="absolute bottom-0 left-0 right-0 bg-white border-t border-zinc-200 px-1 pt-1 pb-2 flex justify-around items-center z-50" style="border-radius: 0 0 48px 48px;">
+            <div onclick="switchTab('home')" class="flex flex-col items-center py-1 px-3 cursor-pointer tab-nav" id="nav-home">
+                <i class="fas fa-home text-2xl text-orange-500"></i>
+                <div class="text-[9px] font-bold text-orange-500">Home</div>
+            </div>
+            <div onclick="switchTab('book')" class="flex flex-col items-center py-1 px-3 cursor-pointer tab-nav" id="nav-book">
+                <i class="fas fa-ticket-alt text-2xl text-zinc-400"></i>
+                <div class="text-[9px] font-semibold text-zinc-400">Buchen</div>
+            </div>
+            <div onclick="switchTab('explore')" class="flex flex-col items-center py-1 px-3 cursor-pointer tab-nav" id="nav-explore">
+                <i class="fas fa-map-marked text-2xl text-zinc-400"></i>
+                <div class="text-[9px] font-semibold text-zinc-400">Entdecken</div>
+            </div>
+            <div onclick="switchTab('gallery')" class="flex flex-col items-center py-1 px-3 cursor-pointer tab-nav" id="nav-gallery">
+                <i class="fas fa-images text-2xl text-zinc-400"></i>
+                <div class="text-[9px] font-semibold text-zinc-400">Galerie</div>
+            </div>
+            <div onclick="switchTab('profile')" class="flex flex-col items-center py-1 px-3 cursor-pointer tab-nav" id="nav-profile">
+                <i class="fas fa-user text-2xl text-zinc-400"></i>
+                <div class="text-[9px] font-semibold text-zinc-400">Profil</div>
+            </div>
+            <div onclick="switchTab('more')" class="flex flex-col items-center py-1 px-3 cursor-pointer tab-nav" id="nav-more">
+                <i class="fas fa-ellipsis-h text-2xl text-zinc-400"></i>
+                <div class="text-[9px] font-semibold text-zinc-400">Mehr</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Container -->
+    <div id="modal-container" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-end justify-center" onclick="if (event.target.id === 'modal-container') hideModal()">
+        <div onclick="event.stopImmediatePropagation()" class="bg-white w-full max-w-[420px] rounded-t-3xl p-6 max-h-[85vh] overflow-auto">
+            <div id="modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind + App Logic (same as v1 + new features)
+        function initTailwind() {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'poppins': ['Poppins', 'system-ui', 'sans-serif'],
+                            'nunito': ['Nunito', 'system-ui', 'sans-serif']
+                        }
+                    }
+                }
+            };
+        }
+
+        let currentTab = 'home';
+        let currentLanguage = 'de';
+        let liveCapacity = 34;
+
+        const attractions = [
+            { id: 0, name: "Riesen-Vulkan", age: "2-10", wait: "4 Min", type: "active", desc: "Klettere hoch und rutsche durch den feuerspeienden Vulkan! Eines der beliebtesten Highlights der Schweiz.", icon: "fa-mountain", color: "#FF6B00" },
+            { id: 1, name: "Trampolin-Himmel", age: "3-12", wait: "2 Min", type: "active", desc: "Springe hoch hinaus auf 12 professionellen Trampolinen mit Sicherheitsnetzen – ein absolutes Highlight.", icon: "fa-child", color: "#00B4D8" },
+            { id: 2, name: "Ballmeer Abenteuer", age: "2-8", wait: "0 Min", type: "calm", desc: "Tauche ein in ein Meer aus 50.000 bunten Bällen. Perfekt zum Toben und Entspannen für die Kleinen.", icon: "fa-swimmer", color: "#22C55E" },
+            { id: 3, name: "Rutsch-Paradies", age: "2-9", wait: "3 Min", type: "active", desc: "Drei verschiedene Rutschen von sanft bis wild – der Klassiker für alle Altersgruppen.", icon: "fa-arrow-down", color: "#A855F7" },
+            { id: 4, name: "Hüpfburg-Land", age: "2-7", wait: "1 Min", type: "active", desc: "Mehrere aufblasbare Burgen und Hindernisparcours. Hier wird gesprungen und gelacht!", icon: "fa-chess-rook", color: "#EC4899" },
+            { id: 5, name: "Kletter-Dschungel", age: "4-12", wait: "5 Min", type: "active", desc: "Kletterwände, Seile und Netze bis 4 Meter hoch. Mit Sicherheitsgurten für die Kleinen.", icon: "fa-hiking", color: "#F59E0B" },
+            { id: 6, name: "Bobbycar-Rennbahn", age: "2-6", wait: "0 Min", type: "calm", desc: "Elektrische und klassische Bobbycars auf einer sicheren Rennstrecke mit Ampeln und Verkehrszeichen.", icon: "fa-car", color: "#06B6D4" },
+            { id: 7, name: "Weichboden-Spiele", age: "0-5", wait: "0 Min", type: "calm", desc: "Extra weicher Bereich nur für die Kleinsten mit Krabbel- und Kuschelzonen – barrierefrei.", icon: "fa-baby", color: "#8B5CF6" },
+            { id: 8, name: "Schaukel-Paradies", age: "2-8", wait: "2 Min", type: "calm", desc: "Verschiedene Schaukeln, Nestschaukeln und eine riesige Familienschaukel.", icon: "fa-swing", color: "#14B8A6" },
+            { id: 9, name: "Mini-Autobahn", age: "3-10", wait: "6 Min", type: "active", desc: "Elektrische Mini-Autos auf einer echten kleinen Strasse mit Verkehrszeichen und Ampeln.", icon: "fa-car-side", color: "#EF4444" }
+        ];
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-nav i').forEach(el => el.classList.remove('text-orange-500'));
+            document.querySelectorAll('.tab-nav div').forEach(el => el.classList.remove('text-orange-500'));
+            document.querySelectorAll('.tab-nav div').forEach(el => el.classList.add('text-zinc-400'));
+            
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            
+            const navEl = document.getElementById('nav-' + tab);
+            if (navEl) {
+                const icon = navEl.querySelector('i');
+                const text = navEl.querySelector('div');
+                if (icon) icon.classList.add('text-orange-500');
+                if (text) { text.classList.remove('text-zinc-400'); text.classList.add('text-orange-500'); }
+            }
+            
+            currentTab = tab;
+            
+            if (tab === 'explore') {
+                renderAttractionsList();
+            }
+        }
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            const msg = lang === 'de' ? 'Sprache auf Deutsch umgestellt' : (lang === 'fr' ? 'Langue changée en français' : 'Language switched to English');
+            showToast(msg);
+            
+            if (lang === 'en') {
+                document.querySelectorAll('.tab-nav div').forEach((el, i) => {
+                    const texts = ['Home', 'Book', 'Explore', 'Gallery', 'Profile', 'More'];
+                    if (texts[i]) el.textContent = texts[i];
+                });
+            } else if (lang === 'fr') {
+                document.querySelectorAll('.tab-nav div').forEach((el, i) => {
+                    const texts = ['Accueil', 'Réserver', 'Explorer', 'Galerie', 'Profil', 'Plus'];
+                    if (texts[i]) el.textContent = texts[i];
+                });
+            } else {
+                document.querySelectorAll('.tab-nav div').forEach((el, i) => {
+                    const texts = ['Home', 'Buchen', 'Entdecken', 'Galerie', 'Profil', 'Mehr'];
+                    if (texts[i]) el.textContent = texts[i];
+                });
+            }
+        }
+
+        function showToast(message, duration = 2200) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-20 left-1/2 -translate-x-1/2 bg-zinc-900 text-white px-6 py-3 rounded-2xl shadow-2xl text-sm font-medium flex items-center gap-2 z-[200]`;
+            toast.innerHTML = `<span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        function updateLiveCapacity() {
+            setInterval(() => {
+                liveCapacity = Math.max(25, Math.min(85, liveCapacity + (Math.random() - 0.5) * 4));
+                const indicators = document.querySelectorAll('.live-dot');
+                indicators.forEach(el => {
+                    if (el.parentElement) {
+                        el.parentElement.innerHTML = `<div class="w-1.5 h-1.5 bg-emerald-500 rounded-full live-dot"></div> <span>LIVE: ${Math.round(liveCapacity)}% AUSGELASTET</span>`;
+                    }
+                });
+            }, 15000);
+        }
+
+        function renderAttractionsList(filter = 'all') {
+            const container = document.getElementById('attractions-list');
+            container.innerHTML = '';
+            
+            let filtered = attractions;
+            if (filter === 'active') filtered = attractions.filter(a => a.type === 'active');
+            if (filter === 'calm') filtered = attractions.filter(a => a.type === 'calm');
+            
+            filtered.forEach(attr => {
+                const card = document.createElement('div');
+                card.className = `attraction-card bg-white rounded-2xl p-4 flex gap-4 items-center shadow border border-zinc-100 cursor-pointer`;
+                card.innerHTML = `
+                    <div class="w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center" style="background-color: ${attr.color}20; color: ${attr.color}">
+                        <i class="fas ${attr.icon} text-2xl"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold">${attr.name}</div>
+                        <div class="text-xs text-zinc-500">${attr.age} Jahre • Wartezeit: <span class="font-semibold text-emerald-600">${attr.wait}</span></div>
+                    </div>
+                    <div class="text-right">
+                        <button onclick="event.stopImmediatePropagation(); showAttractionDetail(${attr.id});" class="px-3 py-1 text-xs font-bold bg-zinc-900 text-white rounded-full">DETAILS</button>
+                    </div>
+                `;
+                card.onclick = () => showAttractionDetail(attr.id);
+                container.appendChild(card);
+            });
+        }
+
+        function filterAttractions(type) {
+            document.querySelectorAll('[id^="filter-"]').forEach(el => el.classList.remove('bg-orange-500', 'text-white'));
+            document.querySelectorAll('[id^="filter-"]').forEach(el => el.classList.add('text-zinc-600'));
+            
+            const activeBtn = document.getElementById('filter-' + type);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-orange-500', 'text-white');
+                activeBtn.classList.remove('text-zinc-600');
+            } else {
+                document.getElementById('filter-all').classList.add('bg-orange-500', 'text-white');
+                document.getElementById('filter-all').classList.remove('text-zinc-600');
+            }
+            
+            renderAttractionsList(type);
+        }
+
+        function showAttractionDetail(id) {
+            const attr = attractions.find(a => a.id === id);
+            if (!attr) return;
+            
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-11 h-11 rounded-2xl flex items-center justify-center" style="background-color: ${attr.color}15; color: ${attr.color}">
+                                <i class="fas ${attr.icon} text-3xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-black text-2xl">${attr.name}</div>
+                                <div class="text-sm text-zinc-500">${attr.age} Jahre • ${attr.wait} Wartezeit</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl leading-none text-zinc-400 hover:text-zinc-600">&times;</button>
+                </div>
+                
+                <div class="aspect-video bg-zinc-100 rounded-2xl mb-5 flex items-center justify-center relative overflow-hidden">
+                    <img src="https://picsum.photos/id/${100 + id}/600/340" class="w-full h-full object-cover" alt="${attr.name}">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div onclick="playAttractionVideo(${id})" class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center cursor-pointer shadow-xl active:scale-95">
+                            <i class="fas fa-play text-orange-600 ml-0.5 text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prose text-sm text-zinc-600">
+                    <p>${attr.desc}</p>
+                    <div class="mt-4 grid grid-cols-3 gap-3 text-xs">
+                        <div class="bg-zinc-50 p-3 rounded-xl text-center">
+                            <div class="font-bold text-lg text-orange-600">${attr.wait}</div>
+                            <div class="text-zinc-500">Wartezeit</div>
+                        </div>
+                        <div class="bg-zinc-50 p-3 rounded-xl text-center">
+                            <div class="font-bold text-lg text-emerald-600">98%</div>
+                            <div class="text-zinc-500">Zufriedenheit</div>
+                        </div>
+                        <div class="bg-zinc-50 p-3 rounded-xl text-center">
+                            <div class="font-bold text-lg text-teal-600">4.9</div>
+                            <div class="text-zinc-500">Bewertung</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex gap-3">
+                    <button onclick="addToVisitPlan(${id}); hideModal()" class="flex-1 py-3.5 border border-zinc-300 font-bold rounded-2xl text-sm">ZUM PLAN HINZUFÜGEN</button>
+                    <button onclick="hideModal(); bookNowQuick()" class="flex-1 py-3.5 bg-orange-600 text-white font-bold rounded-2xl text-sm">JETZT BUCHEN</button>
+                </div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function playAttractionVideo(id) {
+            const modal = document.getElementById('modal-container');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <div class="relative">
+                    <div class="aspect-video bg-black rounded-2xl overflow-hidden flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <i class="fas fa-play-circle text-6xl mb-4 opacity-75"></i>
+                            <div class="font-bold">Video wird in der echten App abgespielt</div>
+                            <div class="text-xs opacity-75 mt-1">YouTube / Eigenes Hosting • 4K + 360°</div>
+                        </div>
+                    </div>
+                    <button onclick="hideModal()" class="absolute top-4 right-4 bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center">✕</button>
+                </div>
+                <div class="mt-4 text-center text-sm text-zinc-500">In der vollen App: 4K Videos, Slow-Motion &amp; 360° Ansichten der Attraktionen</div>
+            `;
+        }
+
+        function addToVisitPlan(id) {
+            const attr = attractions.find(a => a.id === id);
+            showToast(`${attr.name} wurde zu deinem Besuchplan hinzugefügt!`);
+            hideModal();
+        }
+
+        function startTicketBooking(type) {
+            const modalContent = document.getElementById('modal-content');
+            let html = '';
+            
+            if (type === 'single') {
+                html = `
+                    <div class="font-black text-2xl mb-1">Einzelbesuch buchen</div>
+                    <div class="text-sm text-zinc-500 mb-5">Wähle Datum, Uhrzeit und Anzahl</div>
+                    
+                    <div class="mb-5">
+                        <label class="text-xs font-semibold text-zinc-500 block mb-1.5">DATUM</label>
+                        <input type="date" id="book-date" value="2026-05-10" class="w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400">
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label class="text-xs font-semibold text-zinc-500 block mb-1.5">UHRZEIT (Eintritt)</label>
+                        <select id="book-time" class="w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                            <option>10:00</option>
+                            <option selected>11:30</option>
+                            <option>13:00</option>
+                            <option>14:30</option>
+                            <option>16:00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="text-xs font-semibold text-zinc-500 block mb-2">ANZAHL</label>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between bg-zinc-50 px-4 py-3 rounded-2xl">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-child text-orange-500 text-xl w-5"></i>
+                                    <div>
+                                        <div class="font-semibold">Kinder (2–12)</div>
+                                        <div class="text-xs text-emerald-600">17 CHF / Person</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="changeTicketCount(this, -1, 'child')" class="w-8 h-8 bg-white border border-zinc-300 rounded-xl text-xl leading-none flex items-center justify-center active:bg-zinc-100">-</button>
+                                    <span id="count-child" class="font-black w-6 text-center">2</span>
+                                    <button onclick="changeTicketCount(this, 1, 'child')" class="w-8 h-8 bg-white border border-zinc-300 rounded-xl text-xl leading-none flex items-center justify-center active:bg-zinc-100">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between bg-zinc-50 px-4 py-3 rounded-2xl">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-user text-zinc-400 text-xl w-5"></i>
+                                    <div>
+                                        <div class="font-semibold">Erwachsene (13+)</div>
+                                        <div class="text-xs text-emerald-600">7 CHF / Person</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="changeTicketCount(this, -1, 'adult')" class="w-8 h-8 bg-white border border-zinc-300 rounded-xl text-xl leading-none flex items-center justify-center active:bg-zinc-100">-</button>
+                                    <span id="count-adult" class="font-black w-6 text-center">1</span>
+                                    <button onclick="changeTicketCount(this, 1, 'adult')" class="w-8 h-8 bg-white border border-zinc-300 rounded-xl text-xl leading-none flex items-center justify-center active:bg-zinc-100">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between bg-emerald-50 px-4 py-3 rounded-2xl">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-baby text-emerald-600 text-xl w-5"></i>
+                                    <div>
+                                        <div class="font-semibold">Kleinkinder (&lt;2)</div>
+                                        <div class="text-xs text-emerald-600">Kostenlos</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="changeTicketCount(this, -1, 'baby')" class="w-8 h-8 bg-white border border-zinc-300 rounded-xl text-xl leading-none flex items-center justify-center active:bg-zinc-100">-</button>
+                                    <span id="count-baby" class="font-black w-6 text-center">0</span>
+                                    <button onclick="changeTicketCount(this, 1, 'baby')" class="w-8 h-8 bg-white border border-zinc-300 rounded-xl text-xl leading-none flex items-center justify-center active:bg-zinc-100">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl p-4 mb-5">
+                        <div class="flex justify-between text-sm">
+                            <span class="font-semibold">Gesamtbetrag</span>
+                            <span id="total-price" class="font-black text-2xl text-orange-600">41 CHF</span>
+                        </div>
+                        <div class="text-xs text-emerald-600 font-medium">Inkl. 3 Tokens für Rides • MwSt. inbegriffen</div>
+                    </div>
+                    
+                    <button onclick="proceedToPayment('single')" class="kid-button w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-2xl flex items-center justify-center gap-3 text-base active:scale-[0.985]">
+                        <span>WEITER ZUR ZAHLUNG</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                `;
+            }
+            
+            modalContent.innerHTML = html;
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+            
+            if (type === 'single') {
+                setTimeout(() => {
+                    const dateInput = document.getElementById('book-date');
+                    const timeSelect = document.getElementById('book-time');
+                    if (dateInput) dateInput.onchange = updateTotalPrice;
+                    if (timeSelect) timeSelect.onchange = updateTotalPrice;
+                    updateTotalPrice();
+                }, 100);
+            }
+        }
+
+        function changeTicketCount(btn, delta, type) {
+            const countEl = document.getElementById('count-' + type);
+            let current = parseInt(countEl.textContent);
+            current = Math.max(0, current + delta);
+            if (type === 'child' && current > 8) current = 8;
+            if (type === 'adult' && current > 4) current = 4;
+            countEl.textContent = current;
+            updateTotalPrice();
+        }
+
+        function updateTotalPrice() {
+            const childCount = parseInt(document.getElementById('count-child').textContent) || 0;
+            const adultCount = parseInt(document.getElementById('count-adult').textContent) || 0;
+            const total = (childCount * 17) + (adultCount * 7);
+            document.getElementById('total-price').textContent = total + ' CHF';
+        }
+
+        function proceedToPayment(ticketType) {
+            hideModal();
+            
+            setTimeout(() => {
+                const modalContent = document.getElementById('modal-content');
+                let price = ticketType === 'single' ? 41 : 150;
+                let desc = ticketType === 'single' ? 'Einzelbesuch (2 Kinder + 1 Erw.)' : '10er-Pass digital';
+                
+                modalContent.innerHTML = `
+                    <div class="text-center mb-6">
+                        <div class="mx-auto w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-lock text-emerald-600 text-4xl"></i>
+                        </div>
+                        <div class="font-black text-2xl">Zahlung abschliessen</div>
+                        <div class="text-sm text-zinc-500">${desc}</div>
+                    </div>
+                    
+                    <div class="bg-zinc-50 rounded-2xl p-5 mb-6">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span>Betrag</span>
+                            <span class="font-black text-xl">${price} CHF</span>
+                        </div>
+                        <div class="text-xs text-emerald-600">inkl. MwSt. • Keine versteckten Kosten</div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <button onclick="processTwintPayment(${price}, '${ticketType}')" class="w-full py-4 bg-[#FF0000] hover:bg-red-600 transition-colors text-white font-bold rounded-2xl flex items-center justify-center gap-3 active:scale-[0.985]">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-white text-[#FF0000] px-2 py-0.5 text-xs font-black rounded">TWINT</div>
+                                <span>MIT TWINT BEZAHLEN</span>
+                            </div>
+                        </button>
+                        
+                        <div class="text-xs text-center text-zinc-400">— oder —</div>
+                        
+                        <button onclick="processCardPayment(${price}, '${ticketType}')" class="w-full py-3.5 border border-zinc-300 font-semibold rounded-2xl flex items-center justify-center gap-2 active:bg-zinc-50">
+                            <i class="fas fa-credit-card text-lg"></i> 
+                            <span>Kreditkarte / Apple Pay / Google Pay</span>
+                        </button>
+                        
+                        <button onclick="processTwintPayment(${price}, '${ticketType}')" class="w-full py-3.5 border border-zinc-300 font-semibold rounded-2xl flex items-center justify-center gap-2 active:bg-zinc-50">
+                            <i class="fas fa-file-invoice text-lg"></i> 
+                            <span>PostFinance Rechnung (für Schulen/Firmen)</span>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-5 text-[10px] text-center text-zinc-400">Sichere Zahlung über Datatrans (Schweizer PSP). Alle gängigen Schweizer Banken unterstützt.</div>
+                `;
+                
+                document.getElementById('modal-container').classList.remove('hidden');
+                document.getElementById('modal-container').classList.add('flex');
+            }, 180);
+        }
+
+        function processTwintPayment(amount, ticketType) {
+            const modalContent = document.getElementById('modal-content');
+            
+            modalContent.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="mx-auto w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-5">
+                        <i class="fab fa-wifi text-red-600 text-5xl"></i>
+                    </div>
+                    
+                    <div class="font-black text-2xl mb-1">TWINT Zahlung</div>
+                    <div class="text-sm text-zinc-500 mb-6">Öffne die TWINT App auf deinem Handy und scanne den QR-Code oder bestätige die Push-Benachrichtigung.</div>
+                    
+                    <div class="mx-auto w-48 h-48 bg-white border-8 border-zinc-900 rounded-2xl p-4 mb-6 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-xs text-zinc-500 mb-2">SCANNE IN TWINT APP</div>
+                            <div class="mx-auto w-32 h-32 bg-zinc-900 flex items-center justify-center rounded-xl relative overflow-hidden">
+                                <div class="grid grid-cols-8 gap-[1px] p-2 bg-white">
+                                    ${Array(64).fill(0).map((_,i) => `<div class="${Math.random() > 0.5 ? 'bg-zinc-900' : 'bg-white'}" style="width:4px;height:4px"></div>`).join('')}
+                                </div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-white px-2 py-px text-xs font-mono font-black">WUNDER-28491</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-xs text-emerald-600 font-semibold mb-6 flex items-center justify-center gap-2">
+                        <div class="w-2 h-2 bg-emerald-500 rounded-full live-dot"></div>
+                        <span>WARTE AUF BESTÄTIGUNG...</span>
+                    </div>
+                    
+                    <button onclick="completeTwintPayment(${amount}, '${ticketType}')" class="text-xs underline text-zinc-400">Demo: Zahlung sofort abschliessen</button>
+                </div>
+            `;
+        }
+
+        function completeTwintPayment(amount, ticketType) {
+            hideModal();
+            
+            setTimeout(() => {
+                confetti({
+                    particleCount: 180,
+                    spread: 90,
+                    origin: { y: 0.6 }
+                });
+                
+                const successModal = document.createElement('div');
+                successModal.className = 'fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-5';
+                successModal.innerHTML = `
+                    <div class="bg-white max-w-[380px] w-full rounded-3xl p-8 text-center">
+                        <div class="mx-auto w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-check-circle text-emerald-600 text-6xl"></i>
+                        </div>
+                        
+                        <div class="font-black text-3xl tracking-tight mb-2">Zahlung erfolgreich!</div>
+                        <div class="text-emerald-600 font-bold text-xl mb-6">${amount} CHF bezahlt via TWINT</div>
+                        
+                        <div class="bg-zinc-50 rounded-2xl p-4 mb-6 text-left text-sm">
+                            <div class="font-semibold mb-2">Deine Tickets sind bereit:</div>
+                            <div class="flex justify-between text-xs mb-1"><span class="text-zinc-500">Buchungs-Nr.</span> <span class="font-mono font-bold">WL-28491-2026</span></div>
+                            <div class="flex justify-between text-xs mb-1"><span class="text-zinc-500">Gültig ab</span> <span class="font-semibold">10. Mai 2026, 11:30</span></div>
+                            <div class="flex justify-between text-xs"><span class="text-zinc-500">QR-Code</span> <span class="text-emerald-600 font-bold">Im Profil verfügbar</span></div>
+                        </div>
+                        
+                        <button onclick="this.closest('.fixed').remove(); showTicketSuccess()" class="w-full py-3.5 bg-emerald-600 text-white font-bold rounded-2xl">ZUM TICKET IM PROFIL</button>
+                        
+                        <div class="mt-4 text-xs text-zinc-400">Du erhältst eine Bestätigung per E-Mail + Push-Benachrichtigung</div>
+                    </div>
+                `;
+                document.body.appendChild(successModal);
+            }, 600);
+        }
+
+        function processCardPayment(amount, ticketType) {
+            hideModal();
+            setTimeout(() => {
+                const modalContent = document.getElementById('modal-content');
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <div class="font-black text-xl mb-3">Kreditkarte / Apple Pay</div>
+                        <div class="text-sm text-zinc-500 mb-8">In der echten App: Nahtlose Integration mit Apple Pay, Google Pay und allen Karten (Visa, Mastercard, PostFinance)</div>
+                        
+                        <div class="bg-zinc-900 text-white rounded-2xl p-6 text-left text-sm mb-6">
+                            <div class="font-mono tracking-[3px] text-lg mb-4">•••• •••• •••• 4242</div>
+                            <div class="flex justify-between text-xs">
+                                <div>EMMA MÜLLER</div>
+                                <div>05/28</div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="completeCardPayment(${amount}, '${ticketType}')" class="w-full py-4 bg-black text-white font-bold rounded-2xl">JETZT BEZAHLEN • ${amount} CHF</button>
+                    </div>
+                `;
+                document.getElementById('modal-container').classList.remove('hidden');
+                document.getElementById('modal-container').classList.add('flex');
+            }, 200);
+        }
+
+        function completeCardPayment(amount, ticketType) {
+            hideModal();
+            setTimeout(() => {
+                confetti({ particleCount: 120, spread: 70, origin: { y: 0.7 } });
+                showToast(`Zahlung von ${amount} CHF erfolgreich! Tickets im Profil.`);
+                
+                setTimeout(() => {
+                    switchTab('profile');
+                }, 1500);
+            }, 500);
+        }
+
+        function showTicketSuccess() {
+            document.querySelectorAll('.fixed').forEach(el => el.remove());
+            switchTab('profile');
+            showToast('Dein Ticket wurde dem Wallet hinzugefügt!');
+            
+            setTimeout(() => {
+                const profileContent = document.getElementById('tab-profile');
+                const ticketDiv = document.createElement('div');
+                ticketDiv.className = 'mt-4 bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-5 rounded-3xl shadow-xl';
+                ticketDiv.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="uppercase text-xs tracking-widest opacity-75">DIGITALES TICKET</div>
+                            <div class="font-black text-2xl">10. Mai 2026 • 11:30</div>
+                            <div class="text-sm opacity-90">2 Kinder + 1 Erwachsener • WL-28491</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs opacity-75">SCAN ME</div>
+                            <div class="w-12 h-12 bg-white rounded-xl mx-auto mt-1 flex items-center justify-center">
+                                <i class="fas fa-qrcode text-emerald-600 text-4xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                profileContent.appendChild(ticketDiv);
+            }, 800);
+        }
+
+        function showBirthdayModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Kindergeburtstag</div>
+                        <div class="text-pink-600 text-sm font-semibold">Unvergessliche Feiern ab 289 CHF</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-5 text-sm">
+                    <div class="font-bold mb-1">Inklusive:</div>
+                    <ul class="text-xs space-y-1 text-pink-700">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-pink-500"></i> 2 Stunden exklusiver Bereich</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-pink-500"></i> Geburtstagstisch &amp; Deko</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-pink-500"></i> 1 Animationsstunde oder Zaubershow</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-pink-500"></i> Kuchen &amp; Getränke (Wahlmenü)</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-pink-500"></i> Einladungskarten digital + druckbar</li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-semibold text-zinc-500">GEWÜNSCHTES DATUM</label>
+                        <input type="date" value="2026-06-14" class="mt-1 w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-zinc-500">UHRZEIT</label>
+                            <select class="mt-1 w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                                <option>10:00 - 12:00</option>
+                                <option selected>13:00 - 15:00</option>
+                                <option>15:30 - 17:30</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-zinc-500">ANZAHL KINDER</label>
+                            <select class="mt-1 w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                                <option>8 Kinder</option>
+                                <option selected>12 Kinder</option>
+                                <option>16 Kinder</option>
+                                <option>20 Kinder</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-semibold text-zinc-500">PAKET</label>
+                        <div class="mt-2 space-y-2">
+                            <div class="flex items-center justify-between border border-pink-200 bg-pink-50 px-4 py-3 rounded-2xl">
+                                <div><span class="font-bold">Klassik-Paket</span> <span class="text-xs">(ab 12 Kindern)</span></div>
+                                <div class="font-black text-pink-600">289 CHF</div>
+                            </div>
+                            <div class="flex items-center justify-between border border-zinc-200 px-4 py-3 rounded-2xl">
+                                <div><span class="font-bold">Premium-Paket</span> <span class="text-xs">(Zauberer + Fotoshooting)</span></div>
+                                <div class="font-black">449 CHF</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="bookBirthday()" class="mt-6 w-full py-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold rounded-2xl flex items-center justify-center gap-2 active:scale-[0.985]">
+                    <span>GEBURTSTAG JETZT RESERVIEREN</span>
+                </button>
+                
+                <div class="text-center mt-3 text-xs text-zinc-400">Verfügbarkeit in Echtzeit • Kostenlose Stornierung bis 48h vorher</div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function bookBirthday() {
+            hideModal();
+            setTimeout(() => {
+                confetti({ particleCount: 220, spread: 100, colors: ['#FF1493', '#FF69B4', '#FF6B00'] });
+                
+                const success = document.createElement('div');
+                success.className = 'fixed inset-0 bg-black/80 z-[200] flex items-center justify-center p-5';
+                success.innerHTML = `
+                    <div class="bg-white max-w-[380px] w-full rounded-3xl p-8 text-center">
+                        <div class="text-6xl mb-4">🎉</div>
+                        <div class="font-black text-3xl tracking-tighter">Geburtstag reserviert!</div>
+                        <div class="mt-2 text-sm">Deine Feier am <span class="font-bold">14. Juni 2026</span> um 13:00 ist bestätigt.</div>
+                        
+                        <div class="my-6 bg-zinc-50 rounded-2xl p-4 text-left text-sm">
+                            <div class="font-semibold mb-2">Nächste Schritte:</div>
+                            <div class="space-y-1 text-xs">
+                                <div class="flex gap-2"><span class="font-mono text-pink-600">1.</span> Einladungen per App versenden</div>
+                                <div class="flex gap-2"><span class="font-mono text-pink-600">2.</span> Menü &amp; Extras wählen</div>
+                                <div class="flex gap-2"><span class="font-mono text-pink-600">3.</span> Gästeliste &amp; Anfahrtsinfos</div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="this.closest('.fixed').remove(); switchTab('profile');" class="w-full py-3.5 bg-pink-600 text-white font-bold rounded-2xl">ZUM PARTY-PLANNER</button>
+                    </div>
+                `;
+                document.body.appendChild(success);
+            }, 700);
+        }
+
+        function showPassesModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Jahreskarte 2026</div>
+                        <div class="text-amber-600 text-sm font-semibold">Unbegrenzter Zutritt • 30% sparen</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <!-- Basic Pass -->
+                    <div class="border border-amber-200 bg-amber-50 rounded-2xl p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-xl">Basic Jahreskarte</div>
+                                <div class="text-xs text-amber-600">Einzelperson • 12 Monate</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-black text-3xl text-amber-600">299 CHF</div>
+                                <div class="text-xs line-through text-amber-400">428 CHF</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs space-y-1 text-amber-700">
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Unbegrenzter Eintritt 365 Tage</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> 10% Rabatt im Bistro</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Früher Einlass bei Events</div>
+                        </div>
+                        <button onclick="buyPass('basic')" class="mt-4 w-full py-3 bg-amber-600 text-white font-bold rounded-2xl text-sm">BASIC KAUFEN</button>
+                    </div>
+                    
+                    <!-- Family Pass -->
+                    <div class="border-2 border-amber-400 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-5 relative">
+                        <div class="absolute -top-2 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-0.5 rounded-full">BELIEBT</div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-xl">Familien-Jahreskarte</div>
+                                <div class="text-xs text-amber-600">2 Erwachsene + bis 4 Kinder</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-black text-3xl text-amber-600">549 CHF</div>
+                                <div class="text-xs line-through text-amber-400">785 CHF</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs space-y-1 text-amber-700">
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Alle Basic-Vorteile</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> +20% WunderPoints auf jeden Besuch</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> 2 Gratis-Geburtstagspakete pro Jahr</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> 15% Rabatt auf Merch</div>
+                        </div>
+                        <button onclick="buyPass('family')" class="mt-4 w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-bold rounded-2xl text-sm">FAMILIE KAUFEN – 30% SPAREN</button>
+                    </div>
+                    
+                    <!-- Premium Pass -->
+                    <div class="border border-slate-300 bg-slate-50 rounded-2xl p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <div class="font-bold text-xl">Premium Jahreskarte</div>
+                                <div class="text-xs text-slate-600">VIP-Zugang • Alle Vorteile</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-black text-3xl text-slate-600">799 CHF</div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-xs space-y-1 text-slate-600">
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Alle Familien-Vorteile</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Priority Lane bei allen Attraktionen</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Exklusive VIP-Events (4x/Jahr)</div>
+                            <div class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Persönlicher Concierge</div>
+                        </div>
+                        <button onclick="buyPass('premium')" class="mt-4 w-full py-3 bg-slate-700 text-white font-bold rounded-2xl text-sm">PREMIUM KAUFEN</button>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center text-xs text-zinc-400">Alle Karten gelten ab Kaufdatum für 12 Monate. Monatliche Ratenzahlung möglich via PostFinance.</div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function buyPass(type) {
+            hideModal();
+            setTimeout(() => {
+                confetti({ particleCount: 150, spread: 80 });
+                showToast(`Vielen Dank! Deine ${type === 'family' ? 'Familien-' : type === 'premium' ? 'Premium-' : 'Basic-'}Jahreskarte wurde aktiviert.`);
+                
+                setTimeout(() => {
+                    switchTab('profile');
+                }, 1200);
+            }, 400);
+        }
+
+        function showSchoolModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Schulklassen &amp; Gruppen</div>
+                        <div class="text-blue-600 text-sm font-semibold">Spezialpreise für Schulen, Vereine &amp; Firmen</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5">
+                    <div class="font-bold text-blue-700 mb-2">Vorteile für Schulen:</div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-blue-600">
+                        <div class="flex items-center gap-2"><i class="fas fa-check"></i> <span>25% Rabatt ab 12 Kindern</span></div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check"></i> <span>Kostenloser Workshop</span></div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check"></i> <span>Rechnung per PostFinance</span></div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check"></i> <span>Pädagogisches Begleitmaterial</span></div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4 text-sm">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-zinc-500">DATUM</label>
+                            <input type="date" value="2026-05-15" class="mt-1 w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-zinc-500">UHRZEIT</label>
+                            <select class="mt-1 w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                                <option>09:00 - 12:00</option>
+                                <option selected>10:00 - 13:00</option>
+                                <option>13:00 - 16:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-semibold text-zinc-500">ANZAHL KINDER + LEHRPERSONEN</label>
+                        <div class="flex gap-3 mt-1">
+                            <div class="flex-1">
+                                <div class="text-xs text-zinc-500 mb-1">Kinder</div>
+                                <input type="number" value="25" class="w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-xs text-zinc-500 mb-1">Lehrpersonen</div>
+                                <input type="number" value="3" class="w-full border border-zinc-200 rounded-2xl px-4 py-3 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="text-xs font-semibold text-zinc-500">ZUSÄTZLICHE WORKSHOPS (optional)</label>
+                        <div class="mt-2 space-y-2">
+                            <label class="flex items-center gap-3 bg-white border rounded-2xl px-4 py-3 cursor-pointer">
+                                <input type="checkbox" checked class="accent-blue-600">
+                                <div class="flex-1"><span class="font-semibold">Physik &amp; Bewegung</span> <span class="text-xs text-zinc-500">(+4 CHF/Kind)</span></div>
+                            </label>
+                            <label class="flex items-center gap-3 bg-white border rounded-2xl px-4 py-3 cursor-pointer">
+                                <input type="checkbox" class="accent-blue-600">
+                                <div class="flex-1"><span class="font-semibold">Kreatives Bauen mit LEGO</span> <span class="text-xs text-zinc-500">(+6 CHF/Kind)</span></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 bg-blue-600 text-white rounded-2xl p-4 text-center">
+                    <div class="text-xs opacity-75">GESCHÄTZTER PREIS</div>
+                    <div class="font-black text-4xl">487 CHF</div>
+                    <div class="text-xs">25 Kinder + 3 Lehrpersonen • inkl. Workshop</div>
+                </div>
+                
+                <button onclick="bookSchoolGroup()" class="mt-4 w-full py-4 bg-blue-600 text-white font-bold rounded-2xl flex items-center justify-center gap-2 active:bg-blue-700">
+                    <span>GRUPPENBUCHUNG ANFRAGEN</span>
+                </button>
+                
+                <div class="text-center mt-3 text-xs text-zinc-400">Rechnung per PostFinance • Bestätigung innerhalb 24h</div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function bookSchoolGroup() {
+            hideModal();
+            setTimeout(() => {
+                showToast('Vielen Dank! Deine Anfrage wurde an unser Gruppen-Team weitergeleitet. Wir melden uns innerhalb von 24 Stunden.');
+            }, 400);
+        }
+
+        function showLoyaltyModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Deine Vorteile</div>
+                        <div class="text-emerald-600 text-sm font-semibold">SILVER TIER • 12 aktive Benefits</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-medal text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold">SILVER STATUS</div>
+                            <div class="text-xs text-emerald-600">Seit 14. März 2025 • 2,840 Punkte</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="font-semibold text-emerald-700 mb-1">Deine aktiven Vorteile:</div>
+                    <div class="grid grid-cols-1 gap-2">
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-xl border"><i class="fas fa-check text-emerald-500 w-4"></i> <span>10% Rabatt im Bistro</span></div>
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-xl border"><i class="fas fa-check text-emerald-500 w-4"></i> <span>Früher Einlass (15 Min)</span></div>
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-xl border"><i class="fas fa-check text-emerald-500 w-4"></i> <span>Gratis Geburtstagskarte</span></div>
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-xl border"><i class="fas fa-check text-emerald-500 w-4"></i> <span>2x Gratis-Token pro Besuch</span></div>
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-xl border"><i class="fas fa-check text-emerald-500 w-4"></i> <span>20% mehr WunderPoints</span></div>
+                        <div class="flex items-center gap-3 bg-white p-3 rounded-xl border"><i class="fas fa-check text-emerald-500 w-4"></i> <span>Priorität bei Events</span></div>
+                    </div>
+                </div>
+                
+                <div class="mt-5 text-center">
+                    <button onclick="hideModal(); showToast('Vielen Dank für dein Feedback!')" class="text-xs underline text-emerald-600">Welche Vorteile möchtest du als nächstes?</button>
+                </div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function showSBBModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">SBB + Wunderland</div>
+                        <div class="text-indigo-600 text-sm font-semibold">Kombi-Ticket • Bis zu 18% sparen</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 mb-5">
+                    <div class="font-bold text-indigo-700 mb-2">Dein Reiseplan:</div>
+                    <div class="text-sm space-y-2">
+                        <div class="flex justify-between"><span class="text-zinc-500">Von:</span> <span class="font-semibold">Zürich HB</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-500">Nach:</span> <span class="font-semibold">Winterthur</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-500">Zug:</span> <span class="font-semibold">IC 723 • 11:08 – 11:32</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-500">Wunderland Eintritt:</span> <span class="font-semibold">11:45</span></div>
+                    </div>
+                </div>
+                
+                <div class="bg-white border rounded-2xl p-5 mb-5">
+                    <div class="font-bold mb-3">Preisrechner</div>
+                    
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span>SBB Einzelfahrt (Zürich–Winterthur)</span>
+                            <span class="font-bold">18.50 CHF</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Wunderland Eintritt (2 Kinder + 1 Erw.)</span>
+                            <span class="font-bold">41.00 CHF</span>
+                        </div>
+                        <div class="border-t pt-3 flex justify-between text-lg">
+                            <span class="font-bold">Gesamt</span>
+                            <span class="font-black text-indigo-600">59.50 CHF</span>
+                        </div>
+                        <div class="text-xs text-emerald-600">Du sparst 7.00 CHF gegenüber Einzelkauf!</div>
+                    </div>
+                </div>
+                
+                <button onclick="buySBBCombo()" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl flex items-center justify-center gap-2 active:bg-indigo-700">
+                    <i class="fas fa-train"></i>
+                    <span>KOMBITICKET JETZT KAUFEN</span>
+                </button>
+                
+                <div class="text-center mt-3 text-xs text-zinc-400">Gültig für den gewählten Zug • QR-Code für Ein- &amp; Ausstieg + Wunderland</div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function buySBBCombo() {
+            hideModal();
+            setTimeout(() => {
+                confetti({ particleCount: 120, spread: 70 });
+                showToast('SBB + Wunderland Kombiticket erfolgreich gekauft! Dein QR-Code ist im Profil.');
+                setTimeout(() => switchTab('profile'), 1500);
+            }, 400);
+        }
+
+        function showCorporateModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Corporate &amp; Team Events</div>
+                        <div class="text-purple-600 text-sm font-semibold">Firmenanlässe • Teambuilding • 15–200 Personen</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-5 text-sm">
+                    <div class="font-bold text-purple-700 mb-2">Beliebte Pakete:</div>
+                    <div class="space-y-2 text-xs text-purple-600">
+                        <div>• Teambuilding mit Hindernisparcours (ab 15 Personen)</div>
+                        <div>• Firmenjubiläum mit exklusivem Bereich</div>
+                        <div>• Weihnachtsfeier mit Catering &amp; Animation</div>
+                        <div>• Sommer-Event mit Grill &amp; Musik</div>
+                    </div>
+                </div>
+                
+                <div class="text-center py-8">
+                    <div class="text-6xl mb-4">🏢</div>
+                    <div class="font-bold text-lg mb-2">Dein Event bei Wunderland</div>
+                    <div class="text-sm text-zinc-500 mb-6">Wir erstellen dir ein massgeschneidertes Angebot innerhalb von 48 Stunden.</div>
+                    
+                    <button onclick="hideModal(); showToast('Anfrage gesendet! Unser Event-Team meldet sich innerhalb von 24h.')" class="px-8 py-3 bg-purple-600 text-white font-bold rounded-2xl">UNVERBINDLICHES ANGEBOT ANFORDERN</button>
+                </div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function showSustainabilityModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">CO₂-kompensierte Besuche</div>
+                        <div class="text-emerald-600 text-sm font-semibold">Jeder Besuch pflanzt 3 Bäume in der Schweiz</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="text-center py-6">
+                    <div class="text-7xl mb-4">🌲</div>
+                    <div class="font-bold text-2xl mb-2">Bisher 84,320 Bäume gepflanzt</div>
+                    <div class="text-sm text-emerald-600 mb-6">Dank unserer Gäste – danke, dass du dabei bist!</div>
+                    
+                    <div class="bg-emerald-50 rounded-2xl p-5 text-left text-sm">
+                        <div class="font-semibold mb-2">Dein Beitrag heute:</div>
+                        <div class="flex justify-between"><span>1 Besuch = 3 Bäume</span> <span class="font-bold text-emerald-600">+3</span></div>
+                        <div class="flex justify-between mt-1"><span>Dein Total seit 2023</span> <span class="font-bold">84 Bäume</span></div>
+                    </div>
+                </div>
+                
+                <button onclick="hideModal(); showToast('Danke! Dein nächster Besuch wird automatisch kompensiert.')" class="w-full py-4 bg-emerald-600 text-white font-bold rounded-2xl">WEITER SO – NÄCHSTEN BESUCH KOMPENSIEREN</button>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function showAccessibilityModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Barrierefrei &amp; Inklusiv</div>
+                        <div class="text-indigo-600 text-sm font-semibold">Wunderland für alle – Swiss Made</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="space-y-4 text-sm">
+                    <div class="bg-indigo-50 rounded-2xl p-4">
+                        <div class="font-bold text-indigo-700 mb-2">Unsere Angebote:</div>
+                        <div class="grid grid-cols-1 gap-2 text-xs text-indigo-600">
+                            <div class="flex gap-2"><i class="fas fa-wheelchair w-4 mt-0.5"></i> <span>Voll rollstuhlgerecht (EG + 1. OG mit Lift)</span></div>
+                            <div class="flex gap-2"><i class="fas fa-headset w-4 mt-0.5"></i> <span>Sensory Room für neurodiverse Kinder (Ruhezone)</span></div>
+                            <div class="flex gap-2"><i class="fas fa-sign-language w-4 mt-0.5"></i> <span>Gebärdensprach-Dolmetscher auf Anfrage</span></div>
+                            <div class="flex gap-2"><i class="fas fa-clock w-4 mt-0.5"></i> <span>Sensorik-freundliche Zeiten (Di &amp; Do 10–12 Uhr)</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center text-xs text-zinc-500">Wunderland ist Mitglied von "Tourismus für Alle Schweiz" und "Pro Infirmis".</div>
+                </div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function showMerchModal() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <div>
+                        <div class="font-black text-3xl">Wunderland Merch</div>
+                        <div class="text-orange-600 text-sm font-semibold">T-Shirts, Kuscheltiere, Trinkflaschen • Versand in ganz CH</div>
+                    </div>
+                    <button onclick="hideModal()" class="text-3xl text-zinc-300">&times;</button>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white border rounded-2xl overflow-hidden">
+                        <div class="h-28 bg-cover bg-center" style="background-image: url('https://picsum.photos/id/1060/300/200')"></div>
+                        <div class="p-3">
+                            <div class="font-bold text-sm">Vulkan T-Shirt</div>
+                            <div class="text-xs text-zinc-500">Grössen 92–164 • 29 CHF</div>
+                            <button onclick="addToCart('shirt')" class="mt-2 w-full py-2 bg-orange-500 text-white text-xs font-bold rounded-xl">IN DEN WARENKORB</button>
+                        </div>
+                    </div>
+                    <div class="bg-white border rounded-2xl overflow-hidden">
+                        <div class="h-28 bg-cover bg-center" style="background-image: url('https://picsum.photos/id/1074/300/200')"></div>
+                        <div class="p-3">
+                            <div class="font-bold text-sm">Wunder-Bär</div>
+                            <div class="text-xs text-zinc-500">Plüsch • 34 CHF</div>
+                            <button onclick="addToCart('bear')" class="mt-2 w-full py-2 bg-orange-500 text-white text-xs font-bold rounded-xl">IN DEN WARENKORB</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center text-xs text-zinc-400">Versandkostenfrei ab 50 CHF • 3–5 Werktage in die ganze Schweiz</div>
+            `;
+            
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function addToCart(item) {
+            hideModal();
+            showToast(item === 'shirt' ? 'Vulkan T-Shirt wurde in den Warenkorb gelegt!' : 'Wunder-Bär wurde in den Warenkorb gelegt!');
+        }
+
+        function showNotifications() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="font-black text-xl mb-4">Benachrichtigungen</div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex gap-4 bg-emerald-50 p-3 rounded-2xl">
+                        <div class="text-emerald-600"><i class="fas fa-check-circle text-xl"></i></div>
+                        <div class="flex-1">
+                            <div class="font-semibold">Deine Jahreskarte ist aktiviert!</div>
+                            <div class="text-xs text-emerald-600">SILVER • Gültig bis 14. März 2027</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 p-3 rounded-2xl border">
+                        <div class="text-orange-500"><i class="fas fa-birthday-cake text-xl"></i></div>
+                        <div class="flex-1">
+                            <div class="font-semibold">Erinnerung: Emmas Geburtstag in 9 Tagen</div>
+                            <div class="text-xs text-zinc-500">Party-Planner öffnen →</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 p-3 rounded-2xl border">
+                        <div class="text-indigo-500"><i class="fas fa-train text-xl"></i></div>
+                        <div class="flex-1">
+                            <div class="font-semibold">SBB Kombiticket für morgen gebucht</div>
+                            <div class="text-xs text-zinc-500">Zug 11:08 ab Zürich HB</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function uploadMoment() {
+            showToast('Kamera wird geöffnet... (Demo: Foto wird hochgeladen)');
+            setTimeout(() => {
+                confetti({ particleCount: 80, spread: 120 });
+                showToast('Danke! Dein Moment wurde der Community hinzugefügt 🎉');
+            }, 1400);
+        }
+
+        function showSettings() {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="font-black text-xl mb-5">Einstellungen</div>
+                
+                <div class="space-y-4 text-sm">
+                    <div class="flex items-center justify-between py-1">
+                        <div>Push-Benachrichtigungen</div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-9 h-5 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center justify-between py-1">
+                        <div>Live-Kapazitäts-Updates</div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div class="w-9 h-5 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+                    
+                    <div class="pt-3 border-t text-xs">
+                        <div class="font-semibold mb-2">Sprache &amp; Region</div>
+                        <div class="flex gap-2">
+                            <div class="px-4 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Deutsch (CH)</div>
+                            <div class="px-4 py-1 border text-xs rounded-full cursor-pointer">Français</div>
+                            <div class="px-4 py-1 border text-xs rounded-full cursor-pointer">English</div>
+                            <div class="px-4 py-1 border text-xs rounded-full cursor-pointer">Italiano</div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-3 border-t text-xs text-zinc-400">
+                        Datenschutz • AGB • Impressum<br>
+                        <span class="font-mono">El-Kart AG • Steigstrasse 5 • 8406 Winterthur</span><br>
+                        <span class="text-emerald-600">CO₂-kompensiert seit 2024</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').classList.remove('hidden');
+            document.getElementById('modal-container').classList.add('flex');
+        }
+
+        function bookNowQuick() {
+            switchTab('book');
+            setTimeout(() => {
+                startTicketBooking('single');
+            }, 300);
+        }
+
+        function showAllAttractions() {
+            switchTab('explore');
+        }
+
+        function updateTotalPriceOnChange() {}
+
+        function hideModal() {
+            const container = document.getElementById('modal-container');
+            container.classList.remove('flex');
+            container.classList.add('hidden');
+        }
+
+        function initAttractions() {
+            setTimeout(() => {
+                const exploreTab = document.getElementById('tab-explore');
+                if (!exploreTab.classList.contains('hidden')) {
+                    renderAttractionsList();
+                }
+            }, 500);
+        }
+
+        function initEverything() {
+            initTailwind();
+            switchTab('home');
+            updateLiveCapacity();
+            initAttractions();
+            
+            console.log('%c[Wunderland App V2] Enhanced prototype with Season Passes, School Groups, Loyalty Tiers, SBB Integration & Swiss Extras initialized.', 'color:#FF6B00; font-size:9px');
+            
+            // Easter egg
+            let logoClicks = 0;
+            document.querySelector('.logo-font').addEventListener('click', () => {
+                logoClicks++;
+                if (logoClicks === 5) {
+                    confetti({ particleCount: 300, spread: 120 });
+                    showToast('Du hast das Geheimnis gefunden! 🎁 100 Bonus-Wunderpoints');
+                    logoClicks = 0;
+                }
+            });
+            
+            window.WUNDERLAND_APP_V2 = { version: '2.0', ready: true, features: ['Season Passes', 'School Groups', 'Loyalty Tiers', 'SBB Combo', 'Corporate', 'Sustainability', 'Accessibility', 'Merch'] };
+        }
+
+        window.onload = initEverything;
+    </script>
+</body>
+</html>
